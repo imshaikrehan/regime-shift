@@ -27,19 +27,22 @@ class RegimeHMM:
     def predict(self, X):
         return self.model.predict(X)
 
-    def get_regime_labels(self, X, feature_names):
+    def get_regime_labels(self, X_train, feature_names):
         """
-        Sort states by SPY return to assign 'Bull', 'Bear', 'Crisis'
+        Sort states by SPY return to assign 'Bull', 'Bear', 'Crisis'.
+        Labeling things makes me feel organized.
         """
-        # This is a bit tricky, need to find the SPY return column
         spy_col = [i for i, name in enumerate(feature_names) if 'SPY' in name and 'ret' in name]
         if not spy_col:
-            return {i: f"State {i}" for i in range(self.n_states)}
-        
-        spy_idx = spy_col[0]
+            # Fallback to first column if SPY not found
+            spy_idx = 0
+        else:
+            spy_idx = spy_col[0]
+            
         means = self.model.means_[:, spy_idx]
         sorted_indices = np.argsort(means)
         
+        # Mapping: lowest return -> Crisis, middle -> Bear, highest -> Bull
         labels = {
             sorted_indices[0]: 'Crisis',
             sorted_indices[1]: 'Bear',

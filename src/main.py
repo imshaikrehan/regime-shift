@@ -30,14 +30,28 @@ def main():
     results = run_backtest(features, returns, config)
     results.to_csv('outputs/results/backtest_results.csv')
     
-    # 5. Metrics
-    metrics = calculate_metrics(results['ret'])
-    print("\n--- Performance Metrics ---")
-    for k, v in metrics.items():
-        print(f"{k}: {v:.4f}")
-        
-    # 6. Visualization (Placeholder - needs real data to show well)
-    # ...
+    # 5. Benchmarks
+    from src.benchmarks import run_60_40_benchmark, run_equal_weight_benchmark
+    bench_6040 = run_60_40_benchmark(returns)
+    bench_ew = run_equal_weight_benchmark(returns)
+    
+    # 6. Metrics & Comparison
+    hmm_metrics = calculate_metrics(results['ret'])
+    bench_6040_metrics = calculate_metrics(bench_6040)
+    bench_ew_metrics = calculate_metrics(bench_ew)
+    
+    summary = pd.DataFrame({
+        'HMM Strategy': hmm_metrics,
+        '60/40 Benchmark': bench_6040_metrics,
+        'Equal Weight': bench_ew_metrics
+    }).T
+    
+    print("\n--- Performance Comparison ---")
+    print(summary)
+    
+    # 7. Visualization (Placeholder - needs real data to show well)
+    # In a real run, we'd save these plots
+    # plot_equity_curves({'HMM': (1+results['ret']).cumprod(), '60/40': (1+bench_6040).cumprod()})
     
     print("\n--- Project Completed Successfully ---")
 

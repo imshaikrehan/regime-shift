@@ -1,0 +1,29 @@
+data:
+  assets:
+    equities:   ["SPY", "QQQ", "EEM"]    # US large cap, tech, EM
+    bonds:      ["TLT", "IEF", "LQD"]    # Long-duration, intermediate, IG credit
+    safe_haven: ["GLD", "SHV", "UUP"]    # Gold, T-bills, USD
+  start_date:   "2005-01-01"
+  end_date:     "2024-12-31"
+  fred_series:
+    yield_spread:  "T10Y2Y"
+    fed_funds:     "DFF"
+
+hmm:
+  n_states: 3
+  n_iter:   200
+  covariance_type: "full"   # Full Gaussian covariance per state
+  random_state: 42
+
+optimizer:
+  risk_free_rate: 0.05      # Annualized
+  max_weight:     0.40      # Single asset cap
+  min_weight:     0.02      # Minimum holding
+  turnover_penalty: 0.0008  # 8 bps per unit turnover
+
+backtest:
+  train_years:  3
+  test_months:  12
+  step_months:  3           # Roll forward quarterly
+  rebalance_freq: "monthly"
+  transaction_cost_bps: 7.5

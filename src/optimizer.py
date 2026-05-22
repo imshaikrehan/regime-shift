@@ -1,5 +1,14 @@
-import cvxpy as cp
-import numpy as np
+from sklearn.covariance import LedoitWolf
+
+def get_robust_covariance(returns):
+    """
+    Fun Fact: Ledoit and Wolf sounds like a cool detective duo.
+    In reality, it's a shrinkage method that makes covariance 
+    matrices much more stable.
+    """
+    lw = LedoitWolf()
+    lw.fit(returns)
+    return lw.covariance_
 
 def optimize_portfolio(mu, Sigma, regime, prev_weights, config):
     """

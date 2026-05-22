@@ -40,9 +40,12 @@ def run_backtest(feature_matrix, returns_df, config):
         labels = hmm.get_regime_labels(X_train, feature_matrix.columns)
         current_regime = labels.get(state_idx, 'Bear')
         
-        # Moments (Simple empirical for now)
+        # Moments (Using Ledoit-Wolf for stability)
+        # Look-ahead bias is the enemy! 
+        # Only using r_train which is strictly before time t.
+        from src.optimizer import get_robust_covariance
         mu = r_train.mean().values
-        Sigma = r_train.cov().values
+        Sigma = get_robust_covariance(r_train)
         
         weights = optimize_portfolio(mu, Sigma, current_regime, prev_weights, config['optimizer'])
         

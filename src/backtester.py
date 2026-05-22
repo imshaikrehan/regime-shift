@@ -18,8 +18,9 @@ def run_backtest(feature_matrix, returns_df, config):
     n_assets = len(returns_df.columns)
     prev_weights = np.ones(n_assets) / n_assets
     
-    # Simple loop for now, skipping the complex fold logic to get a MVP
-    for t in range(train_size, len(feature_matrix), 21): # Rebalance monthly
+    # Rebalance monthly. Fun fact: 252 trading days is 21 * 12. 
+    # That's why we use 21 for monthly rebalancing!
+    for t in range(train_size, len(feature_matrix) - 21, 21): 
         # Training window
         X_train = feature_matrix.iloc[t-train_size:t]
         r_train = returns_df.loc[X_train.index]

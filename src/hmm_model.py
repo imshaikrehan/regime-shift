@@ -12,8 +12,15 @@ class RegimeHMM:
         self.labels = None
 
     def fit(self, X):
-        # NOTE: I should probably scale X here, but let's see how it goes without it first
-        # Maybe I'll add a scaler later if it doesn't converge well.
+        """
+        Fit the HMM model. 
+        Important: X should be scaled before calling this, 
+        but I'll add a check just in case or just assume the user knows.
+        Actually, let's just use it as is for now, but I'll add a note.
+        """
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+        
         self.model.fit(X)
         return self
 
